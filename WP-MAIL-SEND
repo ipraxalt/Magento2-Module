@@ -1,0 +1,10 @@
+                         /*Mail Send to customer  and admin*/
+                         $header .= 'MIME-VERSION: 1.0\r\n';
+                         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";                     
+
+                         $$message="<p>Fit Type: ".$_POST['fit_type']."</p>";
+                         wp_mail( $to, $subject, $message, $headers);  
+
+                         //get admin email id
+                         $current_user = wp_get_current_user();
+                         $to=$current_user->user_email;                   
