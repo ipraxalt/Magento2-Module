@@ -1,0 +1,10 @@
+if ( !is_user_logged_in() ){
+     $url= get_site_url()."/properties/";
+     print('<script>window.location.href="'.$url.'"</script>');
+     exit();
+} 
+
+ wp_redirect(admin_url('admin.php?page=wpcrl-settings&' . $url_parameters));
+window.location = '<?php echo get_home_url();?>/services/';
+            exit;
+	
