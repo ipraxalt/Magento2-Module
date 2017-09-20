@@ -1,0 +1,181 @@
+<script>
+		function validate() {
+			var rg_company_name=jQuery("#rg_company_name").val();
+			var rg_member_id=jQuery("#rg_member_id").val();
+			var rg_EMAIL=jQuery("#rg_EMAIL").val();
+			var rg_pws=jQuery("#rg_pws").val();
+			var Phone = jQuery("#Phone").val();
+			var rg_investor_name=  jQuery("#rg_investor_name").val();
+			
+		   var flag=0;
+		   if (rg_company_name == null || rg_company_name == "") {
+               jQuery("#error_box").html('Please Enter Company Name');
+               jQuery("#rg_company_name").css('border','1px solid red');
+               flag=1;
+                return false;
+           }else{
+              jQuery("#rg_company_name").css('background','white');
+           }  
+		 
+		 if (rg_EMAIL == null || rg_EMAIL == "") {
+             jQuery("#error_box").html('Please Enter Email'); 
+             jQuery("#rg_EMAIL").css('border','1px solid red');
+             flag=1;
+             return false;
+          }					  
+          var emailregex = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+            if (!rg_EMAIL.match(emailregex)) {
+               jQuery("#error_box").html('Please Enter Valid Email id');
+               jQuery("#rg_EMAIL").css('border','1px solid red');
+               flag=1;
+               return false;
+            }else{
+              jQuery("#rg_EMAIL").css('background','white');
+             }
+		    if (rg_member_id == null || rg_member_id == "") {
+               jQuery("#error_box").html('Please Enter Login Name');
+               jQuery("#rg_member_id").css('border','1px solid red');
+               flag=1;
+                return false;
+           }else{
+              jQuery("#rg_member_id").css('background','white');
+           }
+		    if (rg_pws == null || rg_pws == "") {
+               jQuery("#error_box").html('Please Enter Your Password');
+               jQuery("#rg_pws").css('border','1px solid red');
+               flag=1;
+                return false;
+          }else{
+              jQuery("#rg_pws").css('background','white');
+          }
+		  
+		
+		 
+        if (Phone == null || Phone == "") {
+               jQuery("#error_box").html('Please Enter Phone Number');
+               jQuery("#Phone").css('border','1px solid red');
+               flag=1;
+                return false;
+          }
+         /* var numericExpression =/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+            if (!Phone.match(numericExpression)) {
+               jQuery("#error_box").html('Please Enter User Valid Phone Number');
+               jQuery("#Phone").css('border','1px solid red');
+               flag=1;
+               return false;
+            }*/
+          else{
+              jQuery("#Phone").css('background','white');
+          }
+		  
+		  if (rg_investor_name == null || rg_investor_name == "") {
+               jQuery("#error_box").html('Please Enter User Invester Name');
+               jQuery("#rg_investor_name").css('border','1px solid red');
+               flag=1;
+                return false;
+           }else{
+              jQuery("#rg_investor_name").css('background','white');
+           }
+		   if(flag==0){ 
+	     
+                 return true;		  
+           }      
+}
+</script>
+
+
+<!----Form-in WP->
+<form name="rg_form" action="<?php print esc_url($_SERVER['REQUEST_URI']) ?>" method="POST" enctype="multipart/form-data" > 
+		<table class="form-table member-table-form">
+	    <tbody>
+		 <tr class="form-field form-required">	
+				<div class="row">
+				    <div class="error_box" id="error_box" style="color:red;"></div>
+				</div>
+		</tr>
+				
+					<input type="hidden"  name="action"  id="register" value="register">
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 			<label class="control-label">
+					Member Type <span class="symbol required" aria-required="true">*</span>
+					</label></th>
+					<td>
+					<select name="accesslevel" id="accesslevel" class="form-control">
+					<option value="MEMBER" <?php echo ($memberdata->subscr_investor_accesslevel == 'MEMBER')? 'selected="selected"': ''?>>MEMBER</option>
+					<option value="ADMIN" <?php echo ($memberdata->subscr_investor_accesslevel == 'ADMIN')? 'selected="selected"': ''?>>ADMIN</option>
+					<option value="USER" <?php echo ($memberdata->subscr_investor_accesslevel == 'USER')? 'selected="selected"': ''?>>USER</option>
+					</select>
+			 <input type="hidden" class="form-control" name="request_id" value="<?php echo $memberdata->subscr_investor_id; ?>">
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 	
+				 <label class="control-label">
+						Member Company Name <span class="symbol required">*</span>
+					</label></th>
+					<td>
+					<input type="text" class="form-control" id="rg_company_name" name="rg_company_name" value="<?php echo $memberdata->subscr_investor_company_name; ?>" readonly >
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 			<label class="control-label">
+						Email  <span class="symbol required">*</span>
+					</label></th>
+					<td>
+					<input type="email"  class="form-control" id="rg_EMAIL" name="rg_EMAIL" value="<?php echo $memberdata->subscr_contact_email; ?>">
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 	<label class="control-label">
+						User Id <span class="symbol required">*</span>
+					</label></th>
+					<td>
+					<input type="text" class="form-control" id="rg_member_id" name="rg_member_id" value="<?php echo $memberdata->subscr_userid; ?>" readonly>
+		</tr>
+        <tr class="form-field form-required">			
+				 <th scope="row"> 	<label class="control-label">
+						Password <span class="symbol required">*</span>
+					</label></th>
+					<td>
+					<input type="text" class="form-control" name="rg_pws" id="rg_pws" value="<?php echo $memberdata->subscr_pwd; ?>">
+				</div><input type="hidden"  name="action"  id="register" value="register">
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 			<label class="control-label">
+					Member Status <span class="symbol required" aria-required="true">*</span>
+					</label></th>
+					<td>
+					<select name="status" id="status" class="form-control">
+					<option value="A" <?php echo ($memberdata->	active_ind == 'A')? 'selected="selected"': ''?>>Active</option>
+					<option value="D" <?php echo ($memberdata->	active_ind == 'D')? 'selected="selected"': ''?>>Inactive</option>
+					</select>
+				</div>
+				
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 
+				 <label class="control-label">Phone <em></em> <span class="symbol required">*</span>
+					</label></th>
+					<td>
+					<input type="text" class="form-control" id="Phone" name="phone" value="<?php echo $memberdata->subscr_contact_phone; ?>">
+				 <input type="hidden" name="mode"  value="update">
+				</div>	
+				
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 
+				 <label class="control-label">
+						User Name <span class="symbol required">*</span>
+					</label></th>
+					<td>
+					<input type="text" class="form-control" id="rg_investor_name" name="rg_investor_name" value="<?php echo $memberdata->subscr_investor_name; ?>">
+				</div>
+				
+				
+				
+		</tr>
+		<tr class="form-field form-required">			
+				 <th scope="row"> 
+				 <input type="submit" value="UPDATE MEMBER" name="rg_submit" class="btn btn-primary btn-wide pull-right" id="rg_submit" onclick="return validate();">
+				</div>
+				</tbody>
+			</table>
+		</form>
