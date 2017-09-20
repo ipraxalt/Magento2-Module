@@ -1,0 +1,32 @@
+$user_count=$wpdb->get_var( "SELECT COUNT(*) AS user_count FROM $wpdb->users WHERE `user_login` LIKE '". $user_name ."'" );
+	
+ $winetable = array("usercount" =>$user_count);
+
+
+
+/*Insert*/
+ $insertData = array('subscr_contact_email' => $userEmail, 
+				'subscr_investor_email' =>$userEmail,
+				'subscr_contact_phone' => $phone				
+			);
+            if($wpdb->insert('wp_subscr_investor',$insertData)){
+				echo 'done'; 	
+			}	
+
+/*update*/
+ $result= $wpdb->get_results("UPDATE `wp_subscr_investor` SET `active_ind` = 'D' WHERE
+ `wp_subscr_investor`.`subscr_investor_id` = ".$sub_uid."");
+
+/*Delete*/
+ $sub_uid=$_GET['sub_uid'];
+     $result=$wpdb->get_results("DELETE FROM `wp_subscr_investor` WHERE `wp_subscr_investor`.`
+subscr_investor_id` = ".$sub_uid."");
+
+-------------
+SELECT DATE_FORMAT( `date_listed` , '%Y-%m-%d' ) DATEONLY
+FROM `tbl_classifieds_general`
+
+
+SELECT * 
+FROM `tbl_classifieds_general` 
+WHERE date( `date_listed` ) = '2015-02-10'
