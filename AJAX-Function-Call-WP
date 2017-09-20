@@ -1,0 +1,162 @@
+ajax:
+$('.submit').click(function () {
+   var formData = $('#msform').serialize();
+	formData +="&action=form_finalize_data";
+       	$('.wpcf7-response-output').hide();
+
+        $.ajax({		
+		type:"POST",
+                dataType:'json',
+		data:formData,
+		beforeSend:function(){
+
+                $('.registration-ajax-loader').show();},
+		url: "<?php echo admin_url( 'admin-ajax.php' ); ?>",
+		success: function(returnData)
+		{    //console.log(returnData);
+                      $('.registration-ajax-loader').hide();
+                      if(returnData.status == 'success')
+			{
+                          var msg = "<span class='success-message' style='border: 2px solid green;padding: 5px;'>"+returnData.msg+"</span>";
+				$('.wpcf7-response-output').show();
+				$('.wpcf7-response-output').html(msg);
+                              //  setTimeout(function(){window.location = '<?php echo get_permalink();?>';},4000);
+                                setTimeout(function(){
+					$('form').submit();
+				},2000);
+                        }
+                      else
+			if(returnData.status == 'error')
+			{
+				var msg = "<span class='error-message' style='border: 2px solid red;padding: 5px;'>"+returnData.msg+"</span>";
+				$('.wpcf7-response-output').show();
+				$('.wpcf7-response-output').html(msg);
+			}	
+		}
+	});
+});
+/*******/
+/*******/
+/*******/
+Define funtion in Function.php
+/*******/
+/*******/
+/*******/
+/////////// Save Finalizedata Data to database STARTS //////////////////////////////
+add_action('wp_ajax_form_finalize_data','form_finalize');
+add_action('wp_ajax_nopriv_form_finalize_data','form_finalize');
+//if(!function_exists('form_finalize_data')){
+	function form_finalize(){
+                 // debug($_POST);                   
+
+                    if(empty($_POST['fname'])){
+			$return['status'] = 'error';
+			$return['msg'] = 'Please enter first name';
+			echo json_encode($return);
+			die;
+		    }
+
+                    if( empty($_POST['lname']))
+		     {
+			$return['status'] = 'error';
+			$return['msg'] = 'Please enter last name';
+			echo json_encode($return);
+			die;
+		    }
+                   if( empty($_POST['phone']))
+		     {
+			$return['status'] = 'error';
+			$return['msg'] = 'Please enter phone number';
+			echo json_encode($return);
+			die;
+		    }
+                     if( empty($_POST['email']))
+		     {
+			$return['status'] = 'error';
+			$return['msg'] = 'Please enter email address';
+			echo json_encode($return);
+			die;
+		    }
+
+                    if(!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/", $_POST['email']))	{
+			$return['status'] = 'error';
+			$return['msg'] = __( "Please enter a valid email.");
+			echo json_encode($return);
+			die;
+		}
+
+                    if( empty($_POST['lname']))
+		     {
+			$return['status'] = 'error';
+			$return['msg'] = 'Please enter last name';
+			echo json_encode($return);
+			die;
+		    }
+                    if( empty($_POST['address']))
+		     {
+			$return['status'] = 'error';
+			$return['msg'] = 'Please enter address';
+			echo json_encode($return);
+			die;
+		    }
+                    
+                        global $wpdb;
+                        $insertData = array('cust_fname' => $_POST['fname'], 
+				'cust_lname' =>$_POST['lname'],
+				'cust_phone' => $_POST['phone'],
+				'cust_email' => $_POST['email'],
+				'cust_address' => $_POST['address'],
+				'prod_cost' => $_POST['p_cost'],
+                                'prod_name' => $_POST['p_name'],
+                                'prod_fit_type' => $_POST['fit_type'],
+                                'prod_jacket_type' => $_POST['jacket_type'],
+                                'prod_lapel_type' => $_POST['lapel_type'],
+                                'prod_vent_type' => $_POST['vent_type'],
+                                'prod_jacket_pocket_type' => $_POST['jacket_pocket_type'],
+                                'prod_jacket_inner_lining' => $_POST['jacket_inner_lining'],
+                                'prod_text' => $_POST['text'],
+                                'prod_text_line2' => $_POST['text-line-2'],
+                                'prod_mono_color' => $_POST['mono_color'],
+                                'prod_pant_pleats' => $_POST['pant_pleats'],
+                                'prod_cuff_type' => $_POST['cuff_type'] ,
+				'prod_created' => date('Y-m-d H:i:s'),
+				
+			);
+
+                     
+                      /*insert data to db*/
+                      if($wpdb->insert('ks_customize_user_products',$insertData)){
+			$return['status'] = 'success';
+			$return['msg'] = "submitted";
+			//$return['saved_id'] = $wpdb->insert_id;
+			//$return['user_id'] = $current_user->ID;
+
+                      /*Mail Send to customer  and admin*/
+                         $header .= 'MIME-VERSION: 1.0\r\n';
+                         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+                         $current_user = wp_get_current_user();
+                         $adminEmail=$current_user->user_email;
+
+                         $cusmessage.="<p>Fit Type: ".$_POST['fit_type']."</p><p>Jacket Type: ".$_POST['jacket_type']."</p><p>Lapel Type: ".$_POST['lapel_type']."</p><p>Vent Type: ".$_POST['vent_type']."</p><p>Jacket Pocket Type: ".$_POST['jacket_pocket_type']."</p><p>Jacket Inner Lining: ".$_POST['jacket_inner_lining']."</p><p>Product Mono Color: ".$_POST['mono_color']."</p><p>Product Pant Pleats: ".$_POST['pant_pleats']."</p><p>Product Cuff Type: ".$_POST['cuff_type']."</p>";
+
+                          $message.="<p>Name: ".$_POST['fname']."".$_POST['lname']."</p><p>Phone Number: ".$_POST['phone']."</p><p>Email:  ".$_POST['email']."</p><p>Address: ".$_POST['address']."</p><p>Product Name: ".$_POST['p_name']."</p><p>Product Cost: ".$_POST['p_cost']."</p><p>Fit Type: ".$_POST['fit_type']."</p>";
+$message.="<p>Jacket Type: ".$_POST['jacket_type']."</p><p>Lapel Type: ".$_POST['lapel_type']."</p><p>Vent Type: ".$_POST['vent_type']."</p><p>Jacket Pocket Type: ".$_POST['jacket_pocket_type']."</p><p>Jacket Inner Lining: ".$_POST['jacket_inner_lining']."</p><p>Product Mono Color: ".$_POST['mono_color']."</p><p>Product Pant Pleats: ".$_POST['pant_pleats']."</p><p>Product Cuff Type: ".$_POST['cuff_type']."</p>";
+
+                        wp_mail( $adminEmail, 'King&Saint Customer Product Details', $message, $headers);                     
+                        wp_mail( $_POST['email'], 'King&Saint Product Details', $cusmessage, $headers);  
+ 
+                       /* End Mail Send to customer  and admin*/	
+			echo json_encode($return);
+			die;
+		}else{
+			$return['status'] = 'error';
+			$return['msg'] = 'Please try after sometime.. Database Error Contact Admin';
+			echo json_encode($return);
+			die;
+		}
+                     
+
+
+	}
+	
+//}
